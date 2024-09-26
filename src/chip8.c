@@ -70,13 +70,33 @@ void initializeCPU(chip8_t *chip8) {
 }
 
 void loadROM(chip8_t *chip8, const char *romPath) {
+    FILE *rom = fopen(romPath, "rb");
+    if (!rom) {
+        fprintf(stderr, "Failed to open ROM: %s\n", romPath);
+        exit(1);
+    }
+
+    fseek(rom, 0, SEEK_END);
+    long romSize = ftell(rom);
+    rewind(rom);
+
+    if (romSize > (CHIP8_MEMORY_SIZE - CHIP8_START_ADDRESS)) {
+        fprintf(stderr, "ROM too large to fit in memory: %ld bytes\n", romSize);
+        exit(1);
+    }
+
+    fread(&chip8->memory[CHIP8_START_ADDRESS], sizeof(uint8_t), romSize, rom);
+    fclose(rom);
 }
 
 uint16_t fetchOpcode(chip8_t *chip8) {
-    return 0;
+    return (chip8->memory[chip8->PC] << 8) | chip8->memory[chip8->PC + 1];
 }
 
 void executeCycle(chip8_t *chip8) {
+    chip8->opcode = fetchOpcode(chip8);
+    decodeAndExecute(chip8, chip8->opcode);
+    updateTimers(chip8);
 }
 
 void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
@@ -89,5 +109,5 @@ void updateTimers(chip8_t *chip8) {
 void clearDisplay(chip8_t *chip8) {
 }
 
-void drawSprite(chip8_t *chip8, uint8_t x, uint8_t y, const uint8_t *sprite, uint8_t height) {
+bool drawSprite(chip8_t *chip8, uint8_t x, uint8_t y, const uint8_t *sprite, uint8_t height) {
 }
