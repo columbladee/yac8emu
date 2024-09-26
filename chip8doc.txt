@@ -1,0 +1,130 @@
+chip8-emulator/
+│
+├── src/
+│   ├── main.c                
+│   ├── cpu.c                 
+│   ├── memory.c              
+│   ├── input.c               
+│   ├── graphics.c            
+│   ├── audio.c               
+│   ├── timer.c               
+│   ├── sdl_wrapper.c         
+│   └── logger.c              
+│
+├── include/
+│   ├── chip8.h               
+│   ├── sdl_wrapper.h         
+│   └── logger.h              
+│
+├── assets/
+│   └── roms/                 
+│
+├── Makefile                  
+├── README.md
+└── .gitignore
+
+
+
+
+===========================================
+
+
+1. setup
+
+set up Makefile
+Install SDL2
+
+2. core
+
+cpu.c memory.c input.c timer.c
+
+optional: tests
+
+3. graphics and sound
+
+SDL2
+
+-=--=-=-=-=-=-=--
+
+order of writng files
+
+chip8.h
+chip8.c
+memory.c
+timer.c
+
+graphics.c
+audio.c
+input.c
+
+sdl_wrapper.h
+sdl_wrapper.c
+
+aucio.c
+
+main.c
+
+logger.c
+
+
+=-=-=-=-==-=-
+
+
+Opcodes
+
+0x0NNN - System Instructions:
+
+These instructions deal with system-level functions or calls. The specific 0NNN instruction is reserved in most modern interpreters.
+
+    00E0: Clear the display.
+    00EE: Return from a subroutine (sets the program counter to the address at the top of the stack).
+
+Flow Control
+
+    1NNN: Jump to address NNN. (Sets PC to NNN.)
+    2NNN: Call subroutine at NNN. (Push the current PC onto the stack, then set PC to NNN.)
+    3XNN: Skip the next instruction if VX equals NN. (If VX == NN, PC is incremented by 2.)
+    4XNN: Skip the next instruction if VX does not equal NN. (If VX != NN, PC is incremented by 2.)
+    5XY0: Skip the next instruction if VX equals VY. (If VX == VY, PC is incremented by 2.)
+    9XY0: Skip the next instruction if VX does not equal VY. (If VX != VY, PC is incremented by 2.)
+
+Arithmetic Opcodes:
+
+    6XNN: Set VX to NN. (Assigns the constant NN to register VX.)
+    7XNN: Add NN to VX (without affecting the carry flag).
+    8XY0: Set VX to the value of VY.
+    8XY1: Set VX to VX OR VY (bitwise OR).
+    8XY2: Set VX to VX AND VY (bitwise AND).
+    8XY3: Set VX to VX XOR VY (bitwise XOR).
+    8XY4: Add VY to VX, set VF to 1 if there's a carry, and 0 otherwise.
+    8XY5: Subtract VY from VX, set VF to 0 if there's a borrow, and 1 otherwise.
+    8XY6: Shift VX right by one (dividing by 2), store the least significant bit in VF.
+    8XY7: Set VX to VY - VX, set VF to 0 if there's a borrow, and 1 otherwise.
+    8XYE: Shift VX left by one (multiplying by 2), store the most significant bit in VF.
+
+Display Opcodes:
+
+DXYN: Draw a sprite at coordinates (VX, VY) with N bytes of sprite data starting at memory location I.
+
+    Set VF to 1 if any screen pixels are flipped from set to unset, and 0 otherwise. (Sprites are XORed onto the display.)
+
+Input Opcodes:
+
+EX9E: Skip the next instruction if the key stored in VX is pressed. (Checks the keyboard's state.)
+EXA1: Skip the next instruction if the key stored in VX is not pressed.
+
+Timer and Sound Opcodes:
+
+FX07: Set VX to the value of the delay timer.
+FX0A: Wait for a key press, store the value of the key in VX. (Execution halts until a key is pressed.)
+FX15: Set the delay timer to VX.
+FX18: Set the sound timer to VX.
+FX1E: Add VX to I. (Overflow is ignored.)
+
+
+Misc Opcodes:
+
+FX29: Set I to the location of the sprite for the digit VX (Each sprite is 5 bytes long and used to display hexadecimal digits 0-F).
+FX33: Store the binary-coded decimal (BCD) representation of VX in memory at I, I+1, and I+2.
+FX55: Store registers V0 through VX in memory starting at address I.
+FX65: Read registers V0 through VX from memory starting at address I.
