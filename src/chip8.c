@@ -100,6 +100,73 @@ void executeCycle(chip8_t *chip8) {
 }
 
 void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
+    // Nibbles:  See documentation
+
+    // Main switch handles high nibble of opcode
+
+    switch (opcode & 0xF000) {
+
+        case 0x0000:  /// 00E0 - Clear the display and 0x00EE through Return from a subroutine
+            switch (opcode & 0x00FF) {
+
+                case 0x00E0: // Clear the display
+                    clearDisplay(chip8);
+                    chip8->drawFlag = true; // Set flag to redraw screen
+                    chip8->PC += 2; // Move to next instruction
+                    break;
+
+                case 0x00EE: // 00EE Return from a subroutine
+                    chip8->SP--; // Decrement stack pointer
+                    chip8->PC = chip8->stack[chip8->SP]; // Move to address at top of stack
+                    chip8->PC += 2; // Move to next instruction
+                    break;
+                
+                default:
+                    printf("Unknown opcode: 0x%X\n", opcode);
+                    exit(1); 
+
+            }
+            break; 
+
+        case 0x1000: // 1NNN - Jump to address NNN 
+            chip8->PC = opcode & 0x0FFF; // Set PC to address NNN 
+            break;
+
+        case 0x2000: // 2NNN - Call subroutine at NNN
+            chip8->stack[chip8->SP] = chip8->PC; // Store current PC on stack
+            chip8->SP++; // Increment stack pointer
+            chip8->PC = opcode & 0x0FFF; // Jump to subroutine at NNN
+            break;
+        case 0x3000: // 3XNN - Skip next instruction if VX == NN
+            if (chip8->V[(opcode & 0x0F00) >> 8] == (opcode & 0x00FF)) {
+                chip8->PC += 4; // Skip the next instruction
+            } else {
+                chip8->PC += 2; // Move to next instruction
+            }
+            break;
+
+            case 0x4000: // 4XNN - Skip next instruction if VX != NN
+                if (chip8->V[(opcode & 0xF00) >> 8] != (opcode & 0x00FF)) {
+                    chip8->PC += 4; // Skip the next instruction
+                } else {
+                    chip8->PC += 2; // Move to next instruction
+                }
+                break;
+            
+            case 0x5000: // 5XY0: Skip next instruction if VX == VY
+                if (chip8->V[(opcode & 0x0F00) >> 8] == chip8->V[(opcode & 0x00F0) >> 4]) {
+                    chip8->PC += 4; // Skip the next instruction
+                } else {
+                    chip8->PC += 2; // Move to next instruction
+                }
+                break;
+
+            case 0x6000: // 6XNN : Set VX to NN
+                chip8->V[(opcode & 0x0F00) >> 8] == chip8->V[(opcode & 0x00FF)]; // Set register VX to NN
+                chip8->PC += 2; // Move to next instruction
+                break;
+    }
+
 }
 
 void updateTimers(chip8_t *chip8) {
