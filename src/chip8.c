@@ -165,6 +165,88 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
                 chip8->V[(opcode & 0x0F00) >> 8] == chip8->V[(opcode & 0x00FF)]; // Set register VX to NN
                 chip8->PC += 2; // Move to next instruction
                 break;
+            
+            case 0x7000: // 7XNN : Add NN to VX
+                chip8->V[(opcode & 0x0F00) >> 8] += opcode & 0x00FF; // Add NN to VX
+                chip8->PC +=2; // Move to next instruction
+                break;
+
+            case 0x8000: // Handle math and logical operators between registers
+
+                switch (opcode & 0x000F) {
+                    case 0x0000: // 8XY0 : Set VX to the value of VY
+                        chip8->V[(opcode & 0x0F00) >> 8] = chip8->V[(opcode & 0x00F0) >> 4]; // VX=VY
+                        chip8->PC += 2; // Move to next instruction
+                        break;
+
+                        case 0x0001: // 8XY1 : Set VX to bitwise VX OR VY
+                            chip8->V[(opcode & 0x0F00) >> 8] |= chip8->V[(opcode & 0x0F00) >> 4]; // VX |= VY
+                            chip8->PC += 2; // Move to next instruction
+                            break;
+                        
+                        case 0x0002: // 8XY2 : Set VX to bitwise VX AND VY
+                            chip8->V[(opcode & 0x0F00) >> 8] &= chip8->V[(opcode & 0x0F00) >> 4]; // VX |= VY
+                            chip8->PC += 2; // Move to next instruction
+                            break;
+
+                        case 0x0003: // 8XY2 : Set VX to bitwise VX XOR VY
+                            chip8->V[(opcode & 0x0F00) >> 8] ^= chip8->V[(opcode & 0x0F00) >> 4]; // VX |= VY
+                            chip8->PC += 2; // Move to next instruction
+                            break;
+
+                        case 0x0004: // 8XY4: Add VY to VX, set VF on carry
+                            if (chip8->V[(opcode & 0x00F0) >> 4] > (0xFF - chip8->V[(opcode & 0xF00) >> 8])) {
+                                chip8->V[0xF] = 1; // Carry flag set to 1 if there is an overflow
+                            } else {
+                                chip8->V[0xF] = 0; // No carry
+                            }
+                            break;
+                        
+                        case 0x0005:  // 8XY5 : Subtract VY from VX, set VF if no borrow
+                            // some turmoil occured here
+                            if (chip8->V[(opcode & 0x00F0) >> 4] > chip8->V[(opcode & 0x0F00 >> 8)]) {
+                                chip8->V[0xF] = 0; // Borrow occured
+                            } else {
+                                chip8->V[0xF] = 1; // No borrow
+                            }
+                            chip8->V[(opcode & 0x0F00) >> 8] -= chip8->V[(opcode & 0x00F0) >> 4]; //VX -= VY
+                            chip8->PC += 2; // Move to next instruction
+                            break;
+                        break;
+
+                    case 0x0006: // 8XY6 Store least significant bit of VX in VF, then shift VX to the right by 1
+                        chip8->V[0xF] = chip8->V[(opcode & 0x0F00) >> 8] & 0x1; // Store least significant bit of VX in VF
+                        chip8->V[(opcode & 0x0F00) >> 8] >>= 1; // Shift VX to the right by 1
+                        chip8->PC += 2; // Move to next instruction
+                        break;
+                    
+                    case 0x0007: // 8XY7 : Set VX to VY - VX, set VF if no borrow
+                        if (chip8->V[(opcode & 0x0F00) >> 8] > chip8->V[(opcode & 0x00F0) >> 4]) {
+                            chip8->V[0xF] = 0; // Borrow occured
+                        } else {
+                            chip8->V[0xF] = 1; // No borrow
+                        }
+                        chip8->V[(opcode & 0x0F00) >> 8] = chip8->V[(opcode & 0x00F0) >> 4] - chip8->V[(opcode & 0x0F00) >> 8]; // VX = VY - VX
+                        chip8->PC += 2; // Move to next instruction
+                        break;
+                    
+                    case 0x000E: // 8XYE: Store most significant bit of VX in VF, then shift VX to the left by 1
+                        chip8->V[0xF] = chip8->V[(opcode & 0x0F00) >> 8] >> 7; // Store most significant bit of VX in VF
+                        chip8->V[(opcode & 0x0F00) >> 8] <<= 1; // Shift VX to the left by 1
+                        chip8->PC += 2; // Move to next instruction
+                        break;
+                    
+                    default:
+                        printf("Unknown opcode: %X\n", opcode);
+                        exit(1);
+                        break;
+                }
+                break;
+            
+            case 0xA000: // ANNN : Set I to address NNN
+                chip8->I = opcode & 0x0FFF; // Set I to address NNN
+                chip8->PC += 2; // Move to next instruction
+                break;
     }
 
 }
