@@ -124,7 +124,6 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
                 default:
                     printf("Unknown opcode: 0x%X\n", opcode);
                     exit(1); 
-
             }
             break; 
 
@@ -247,6 +246,29 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
                 chip8->I = opcode & 0x0FFF; // Set I to address NNN
                 chip8->PC += 2; // Move to next instruction
                 break;
+            
+            case 0xC000: // CXXN: Set VX to random byte AND NN
+                chip8->V[(opcode & 0x0F00) >> 8] = (rand() % 0xFF) & (opcode & 0x00FF); // VX = random byte AND NN
+                chip8->PC += 2;
+                break;
+            
+            case 0xD000: {  // DXYN : Displays N-byte sprite starting at memory address I at (VX, VY), set VF = collision
+                uint8_t x = chip8->V[(opcode & 0xF00) >> 8]; // X-coordinate from VX
+                uint8_t y = chip8->V[(opcode & 0x0F0) >> 4]; // Y-coordinate from VY
+                uint8_t height = opcode & 0x000F; // Height (N bytes) from the last nibble
+                // this ... I'm upset about this next part taking so long to figure out
+                const uint8_t *sprite = opcode &chip8->memory[chip8->I]; // Sprite draw starting at memory address I
+                // observe the following demure use of the ternary operator
+                chip8->V[0xF] = drawSprite(chip8, x, y, sprite, height) ? 1 : 0; // Set VF to 1 if collision 
+                chip8->drawFlag = true; // Set draw flag to redraw screen
+                chip8->PC += 2; // Move to next instruction
+            }
+            break;
+
+            case 0xE000:
+                // Opcodes below handle key press events
+
+
     }
 
 }
