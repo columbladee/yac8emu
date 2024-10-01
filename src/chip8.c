@@ -267,8 +267,101 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
 
             case 0xE000:
                 // Opcodes below handle key press events
+                switch (opcode & 0x00FF) {
+                    case 0x009E: // EX9E : Skip next instruction if key stored in VX is pressed
+                        if (chip8->keypad[chip8->V[(opcode & 0x0F00) >> 8 ]]) {
+                            chip8->PC += 4; // skip next instruction
+                        } else {
+                            chip8->PC += 2; // Move to next instruction
+                        }
+                        break;
+                    
+                    case 0x00A1: //EXA1 : Skip next instruction if key stored in VX is not pressed
+                        if (!chip8->keypad[chip8->V[(opcode & 0x0F00) >> 8]]) {
+                            chip8->PC += 4; // Skip next instruction
+                        } else {
+                            chip8->PC += 2; // Move to next instruction
+                        }
+                        break;
 
+                    default:
+                        printf("Unknown opcode: 0x%X\n", opcode);
+                        exit(1); 
+                }
+                break;
+            
+            case 0xF000:
+            // Handle timers, memory, input
+            switch (opcode & 0x00FF) {
+                case 0x0007: // FX07 : Set VX to value of delay timer
+                    chip8->V[(opcode & 0x0F00) >> 8] = chip8->delay_timer; // Set VX to value of delay timer
+                    chip8->PC += 2; // Move to next instruction
+                    break;
+                
+                case 0x000A: // FX0A : Wait for key press, store key in VX
+                {
+                    bool keyPressed = false;
+                    for (int i = 0; i < CHIP8_KEYPAD_SIZE; i++) {
+                        if (chip8->keypad[i]) {
+                            chip8->V[(opcode & 0x0F00) >> 8] = i; // Store key in VX
+                            keyPressed = true;
+                            break;
+                        }
+                    }
 
+                    if (!keyPressed) {
+                        return; // Keep waiting for key press
+                    }
+
+                    chip8->PC += 2; // Move to next instruction after key press
+                }
+                break;
+
+                case  0x0015: // FX15 : Set delay timer to VX
+                    chip8->delay_timer = chip8->V[(opcode & 0x0F00) >> 8]; // Set delay timer to VX
+                    chip8->PC += 2; // Move to next instruction
+                    break;
+                
+                case 0x0018: // FX18 : Set sound timer to VX
+                    chip8->sound_timer = chip8->V[(opcode & 0x0F00) >> 8]; // Set sound timer to VX
+                    chip8->PC += 2; // Move to next instruction
+                    break;
+                
+                case 0x001E: // FX1E : Add VX to I
+                    chip8->I += chip8->V[(opcode & 0x0F00) >> 8]; // Add VX to I
+                    chip8->PC += 2; // Move to next instruction
+                    break;
+                
+                case 0x0033: // FX33 : Store BCD representation of VX in memory locations I, I+1, I+2
+                    chip8->memory[chip8->I] = chip8->V[(opcode & 0x0F00) >> 8] / 100; // Hundreds digit
+                    chip8->memory[chip8->I + 1] = (chip8->V[(opcode & 0x0F00) >> 8] / 10) % 10; // Tens digit
+                    chip8->memory[chip8->I + 2] = chip8->V[(opcode & 0x0F00) >> 8] % 10; // Ones digit
+                    chip8->PC += 2; // Move to next instruction
+                    break;
+                
+                case 0x0055: // FX55: Store registers V0 through VX in memory starting at address I
+                    for (int i = 0; i <= ((opcode & 0x0F00) >> 8); i++) {
+                        chip8->memory[chip8->I + i] = chip8->V[i]; // Store V0 to VX in memory starting at address I
+                    }
+                    chip8->PC += 2; // Move to next instruction
+                    break;
+                
+                case 0x0065: // FX65 : Read registers V0 through VX from memory starting at address I
+                    for (int i = 0; i <= ((opcode & 0x0F00) >> 8); i++) {
+                        chip8->V[i] = chip8->memory[chip8->I + i]; // Load memory into V0 to VX
+                    }
+                    chip8->PC += 2; // Move to next instruction
+                    break;
+                
+                default:
+                    printf("Unknown opcode: 0x%X\n", opcode);
+                    exit(1);
+            }
+            break;
+
+            default:
+                printf("Unknown opcode: 0x%X\n", opcode);
+                exit(1);
     }
 
 }
