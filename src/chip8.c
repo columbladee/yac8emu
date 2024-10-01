@@ -366,12 +366,41 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
 
 }
 
-void updateTimers(chip8_t *chip8) {
+
+void updateTimers(chip8_t *chip8) { // Ensures delay timer accurately is updated each cycle (60Hz)
+    if (chip8->delay_timer > 0) {
+        chip8->delay_timer--;
+    }
+
+    if (chip8->sound_timer > 0) {
+        if (--chip8->sound_timer == 0) {
+            // Play sound when timer hits zero (handled by SDL)
+            // Placeholder: playSound(); 
+        }
+    }
 }
 
-
 void clearDisplay(chip8_t *chip8) {
+    memset(chip8->display, 0, sizeof(chip8->display)); // Clear display
 }
 
 bool drawSprite(chip8_t *chip8, uint8_t x, uint8_t y, const uint8_t *sprite, uint8_t height) {
+    bool pixelFlipped = false; // Set to true if a pixel is turned off
+
+    for (int row = 0; row < height; row++) {
+        uint8_t spriteRow = sprite[row]; // Get current row of sprite
+        for (int col = 0; col < 8; col++) {
+            uint8_t spritePixel = (spriteRow & (0x80 >> col)) >> (7 - col); // Get current pixel of sprite
+            int displayIndex = (x + col) % CHIP8_DISPLAY_WIDTH + ((y + row) % CHIP8_DISPLAY_HEIGHT) * CHIP8_DISPLAY_WIDTH; // Get index of display pixel
+
+            if (spritePixel) {
+                if (chip8->display[displayIndex]) {
+                    pixelFlipped = true; // Collision detected
+                }
+                chip8->display[displayIndex] ^= 1; // XOR with sprite pixel
+            }
+        }
+    }
+
+    return pixelFlipped;
 }
