@@ -9,10 +9,14 @@
 #define CHIP8_MEMORY_SIZE 4096 // 4Kb memory (0x000-0xFFF , 0x000-0x1FF is reserved for the interpreter, 0x200-0xFFF is for programs)
 #define CHIP8_REGISTER_COUNT 16 // 16 8-bit GP registers (V0-VF) (VF is used as a flag)
 // There is also a 16-bit I register (index register) which is used to store memory addresses and a 16-bit program counter (PC)
-#define CHIP8_STACK_SIZE 16 // 16 levels of stack
-#define CHIP8_KEYPAD_SIZE 16 // chip 8 has a 16-key hexadecimal keypad
-#define CHIP8_DISPLAY_WIDTH 64 // Width of the display
-#define CHIP8_DISPLAY_HEIGHT 32 // Height of the display
+// 16 levels of stack
+#define CHIP8_STACK_SIZE 16 
+// chip 8 has a 16-key hexadecimal keypad
+#define CHIP8_KEYPAD_SIZE 16 
+// Width of the display
+#define CHIP8_DISPLAY_WIDTH 64
+// Height of the display
+#define CHIP8_DISPLAY_HEIGHT 32 
 #define CHIP8_DISPLAY_SIZE (CHIP8_DISPLAY_WIDTH * CHIP8_DISPLAY_HEIGHT) // Total number of pixels in the display
 #define CHIP8_START_ADDRESS 0x200 
 
