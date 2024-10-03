@@ -34,17 +34,6 @@ static const uint8_t chip8_fontset[CHIP8_FONTSET_SIZE] = {
 };
 
 void initializeCPU(chip8_t *chip8) {
-    // I actually forgot... -> is for accessing members of a struct (or union) through a pointer
-    /*
-    in the cases below... chip8 variable is a pointer to a chip8_t struct
-    chip8 struct from chip8.h  Allows for access to the array (V, stack, memory, display, keypad)
-    Witout -> it would be
-    (*chip8).variable 
-    or 
-    (*chip8).arrayName[index]
-    
-    
-    */
     chip8->PC = CHIP8_START_ADDRESS; // Program counter starts at 0x200
     chip8->I = 0; // Reset index register
     chip8->SP = 0; // Reset stack pointer
