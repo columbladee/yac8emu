@@ -90,7 +90,26 @@ void handleSDLInput(chip8_t *chip8) {
 }
 
 void renderGraphics(chip8_t *chip8) {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Set black background
+    SDL_RenderClear(renderer); // Clear the screen
 
+    //Set color for drawing pixels (white)
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+    for (int y = 0; y < CHIP8_DISPLAY_HEIGHT; y++) {
+        for (int x = 0; x < CHIP8_DISPLAY_WIDTH; x++) {
+            if (chip8->display[y * CHIP8_DISPLAY_WIDTH + x]) {
+                //Draw a filled rectangle for each pixel that is set
+                SDL_Rect rect;
+                rect.x = x * PIXEL_SIZE;
+                rect.y = y * PIXEL_SIZE;
+                rect.w = PIXEL_SIZE;
+                rect.h = PIXEL_SIZE;
+                SDL_RenderFillRect(renderer, &rect);
+            }
+        }
+    }
+    SDL_RenderPresent(renderer); // Update the screen
 }
 
 void playSound() {
