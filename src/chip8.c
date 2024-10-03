@@ -14,8 +14,6 @@
 #define CHIP8_DISPLAY_HEIGHT 32
 #define CHIP8_START_ADDRESS 0x200
 
-// CHIP-8 fontset (contains hexadecimal digits 0-F, stored at memory locations 0x050 to 0x09F)
-
 static const uint8_t chip8_fontset[CHIP8_FONTSET_SIZE] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
