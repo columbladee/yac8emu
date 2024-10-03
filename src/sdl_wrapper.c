@@ -113,13 +113,34 @@ void renderGraphics(chip8_t *chip8) {
 }
 
 void playSound() {
-
+    if (isAudioOpened) {
+        // Generate square wave for buzzer
+        float squareWave[800];
+        for (int i = 0; i < 800; i++){
+            // Generate a square wave: 0.5 for the first half of the period, -0.5 for the second half
+            squareWave[i] = (i % 100 < 50) ? 0.5f : -0.5f;
+        }
+        SDL_QueueAudio(audioDevice, squareWave, sizeof(squareWave));
+        SDL_PauseAudioDevice(audioDevice, 0); // Start playing sound
+    }
 }
 
 void stopSound() {
-
+    if (isAudioOpened) {
+        SDL_ClearQueuedAudio(audioDevice); // Stop any sound that is queued
+        SDL_PauseAudioDevice(audioDevice, 1); // Stop playing sound
+    }
 }
 
 void destroySDL() {
-
+    if (isAudioOpened) {
+        SDL_CloseAudioDevice(audioDevice);
+    }
+    if (renderer) {
+        SDL_DestroyRenderer(renderer);
+    }
+    if (window) {
+        SDL_DestroyWindow(window);
+    }
+    SDL_Quit();
 }
