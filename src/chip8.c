@@ -1,4 +1,5 @@
 #include "chip8.h"
+#include "sdl_wrapper.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -244,9 +245,7 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
                 uint8_t x = chip8->V[(opcode & 0xF00) >> 8]; // X-coordinate from VX
                 uint8_t y = chip8->V[(opcode & 0x0F0) >> 4]; // Y-coordinate from VY
                 uint8_t height = opcode & 0x000F; // Height (N bytes) from the last nibble
-                // this ... I'm upset about this next part taking so long to figure out
                 const uint8_t *sprite = opcode &chip8->memory[chip8->I]; // Sprite draw starting at memory address I
-                // observe the following demure use of the ternary operator
                 chip8->V[0xF] = drawSprite(chip8, x, y, sprite, height) ? 1 : 0; // Set VF to 1 if collision 
                 chip8->drawFlag = true; // Set draw flag to redraw screen
                 chip8->PC += 2; // Move to next instruction
@@ -363,7 +362,7 @@ void updateTimers(chip8_t *chip8) { // Ensures delay timer accurately is updated
     if (chip8->sound_timer > 0) {
         if (--chip8->sound_timer == 0) {
             // Play sound when timer hits zero (handled by SDL)
-            // Placeholder: playSound(); 
+            playSound(); 
         }
     }
 }
