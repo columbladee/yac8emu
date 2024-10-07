@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
 // Hardware Constants from http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#0.1
 #define CHIP8_MEMORY_SIZE 4096 // 4Kb memory (0x000-0xFFF , 0x000-0x1FF is reserved for the interpreter, 0x200-0xFFF is for programs)
 #define CHIP8_REGISTER_COUNT 16 // 16 8-bit GP registers (V0-VF) (VF is used as a flag)

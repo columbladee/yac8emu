@@ -1,10 +1,12 @@
 #include "sdl_wrapper.h"
+#include "logger.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 //Scaled up from chip8 display width (64) and height (32)
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 320
-#define PIXEL_SIZE 10
+#define WINDOW_SCALE 10
+#define WINDOW_WIDTH (CHIP8_DISPLAY_WIDTH * WINDOW_SCALE)
+#define WINDOW_HEIGHT (CHIP8_DISPLAY_HEIGHT * WINDOW_SCALE)
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
