@@ -413,13 +413,51 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
                     break;
 
                 case 0x0029: //FX29 : Set I = location of sprite for digit VX
-                    chip8->I = CHIP8_FONTSET_START_ADDRESS + (chip8->V[(opcode & 0x0F00) >> 8] * 5); // Set I to location of sprite for digit VX
+                    chip8->I = CHIP8_FONTSET_START_ADDRESS + (chip8->V[(opcode & 0x0F00) >> 8] * 5); // Each sprite occupies five bytes in memory hence * 5
                     chip8->PC += 2; // Move to next instruction
                     logInfo("Opcode FX29: Set I to location of sprite for digit V[%X] = %X", (opcode & 0x0F00) >> 8, chip8->V[(opcode & 0x0F00) >> 8]);
                     break;
+
+                case 0x0033: { // FX33 : Store BCD representation of VX in memory locations [I, I+1, I+2]
+                    uint8_t value = chip8->V[(opcode & 0x0F00) >> 8]; // Get value from VX
+                    chip8->memory[chip8->I] = value / 100; // Store hundreds digit at I
+                    chip8->memory[chip8->I + 1] = (value / 10) % 10; // Store tens digit at I+1
+                    chip8->memory[chip8->I + 2] = value % 10; // Store ones digit at I+2
+                    chip8->PC += 2; // Move to next instruction
+                    logInfo("Opcode FX33: Store BCD representation of V[%X] = %d in memory locations I, I+1, I+2", (opcode & 0x0F00) >> 8, value);
+                    break;
+                }
+
+                case 0x0055: { // FX55 : Store registers V0 through VX in memory starting at address I
+                    uint8_t X = (opcode & 0x0F00) >> 8; // Get X value from opcode
+                    for (int i = 0; i <= X; i++) {
+                        chip8->memory[chip8->I + i] = chip8->V[i]; // Store registers V0 through VX in memory starting at address I
+                    }
+                    chip8->PC += 2; // Move to next instruction
+                    logInfo("Opcode FX55: Store registers V0 through V[%X] in memory starting at address I (0x%04X)", X, chip8->I);
+                    break;
+                }
+
+                case 0x0065: { // FX65 : Read registers V0 through VX from memory starting at address I
+                    uint8_t X = (opcode & 0x0F00) >> 8; // Get X value from opcode
+                    for (int i = 0; i <= X; i++) {
+                        chip8->V[i] = chip8->memory[chip8->I + i]; // Load memory into V0 to VX
+                    }
+                    chip8->PC += 2; // Move to next instruction
+                    logInfo("Opcode FX65: Read V0 through V[%X] from memory starting at I (0x%04X)", X, chip8->I);
+                    break;
+                }
+
+                default:
+                    logError("Unknown opcode: 0x%X", opcode);
+                    exit(1);
             }
-            
-    }        
+            break;
+        
+        default:
+            logError("Unknown opcode: 0x%X", opcode);
+            exit(1);     
+    }
 }
 
 
@@ -439,6 +477,7 @@ void updateTimers(chip8_t *chip8) { // Ensures delay timer accurately is updated
 
 void clearDisplay(chip8_t *chip8) {
     memset(chip8->display, 0, sizeof(chip8->display)); // Clear display
+    logInfo("Display Cleared");
 }
 
 bool drawSprite(chip8_t *chip8, uint8_t x, uint8_t y, const uint8_t *sprite, uint8_t height) {
@@ -461,5 +500,6 @@ bool drawSprite(chip8_t *chip8, uint8_t x, uint8_t y, const uint8_t *sprite, uin
             }
         }
     }
+    logDebug("Sprite drawn at (%d, %d), height: %d, collision %d", x, y, height, pixelFlipped);
     return pixelFlipped;
 }
