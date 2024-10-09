@@ -55,3 +55,46 @@ int initializeGraphics(chip8_t *chip8) {
 	return 0;
 
 }
+
+void destroyGraphics() {
+	if (texture) {
+		SDL_DestroyTexture(texture);
+		texture = NULL;
+		logInfo("Texture DESTROYED");
+	}
+
+	if (renderer) {
+		SDL_DestroyRenderer(renderer);
+		renderer = NULL;
+		logInfo("Renderer DESTROYED");
+	}
+
+	if (window) {
+		SDL_DestroyWindow(window);
+		window = NULL;
+		logInfo("Window DESTROYED");
+	}
+
+	SQL_QuitSubSystem(SDL_INIT_VIDEO);
+	logInfo("SDL Video subsystem QUIT it just QUIT");
+}
+
+void renderGraphics(chip8_t *chip8) {
+	//create an array to hold pixel data for the entire display
+	uint32_t pixels[CHIP8_DISPLAY_SIZE];
+
+	//Convert display buffer into pixel data for SDL
+	for (int i = 0; i < CHIP8_DISPLAY_SIZE; i++) {
+		// If pixel is set (1) it is white = 0xFFFFFFFF
+		// If pixel is not set (0) it is black 0xFF000000
+		pixels[i] = chip8->display[i] ? 0xFFFFFFFF : 0xFF000000;
+		
+		//	Texture Update - New Pixel Data
+		//SDL_Update Texture
+		//	Rendering Process
+		//SDL_RenderClear
+		//SDL_RenderCopy
+		//SDL_RenderPresent
+
+	}
+}
