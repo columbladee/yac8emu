@@ -6,6 +6,39 @@
 #include <stdbool.h>
 #include <math.h>
 
+// NYI : Make this a square wave , not a sine wave, for accuracy
+/*
+Pseudocode for square wave
+
+function generateSquareWave(amplitude, frequency, duration):
+    // Initialize variables
+    period = 1 / frequency
+    currentTime = 0 
+    outputValue = 0 
+
+    while currentTime < duration:
+        // Check if current time is within the high period
+        if currentTime < (period / 2):
+            outputValue = amplitude
+        else:
+            outputValue = -amplitude 
+        
+        // Update time
+        currentTime += timeStep 
+        
+        // Output the value
+        print(outputValue) 
+
+    return 
+
+
+	Condition check: Inside the loop, an if statement checks if the current time is within the first half of the period (currentTime < (period / 2)).
+
+    If true, the outputValue is set to the positive amplitude.
+    If false, the outputValue is set to the negative amplitude.
+
+*/
+
 #define SAMPLE_RATE 44100
 #define FREQUENCY 800.0f
 
