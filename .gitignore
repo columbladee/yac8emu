@@ -21,7 +21,8 @@
 *.a
 *.la
 *.lo
-
+*.json
+*.vscode
 # Shared objects (inc. Windows DLLs)
 *.dll
 *.so
