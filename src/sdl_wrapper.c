@@ -1,19 +1,23 @@
 #include "sdl_wrapper.h"
 #include <stdio.h>
 
+// https://wiki.libsdl.org/SDL2/APIByCategory
+// https://wiki.libsdl.org/SDL2/CategoryAPIFunction
+// https://wiki.libsdl.org/SDL2/CategoryAPIStruct
+
 //Scaled up from chip8 display width (64) and height (32)
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 320
 #define PIXEL_SIZE 10
 
-static SDL_Window *window = NULL;
-static SDL_Renderer *renderer = NULL;
+static SDL_Window *window = NULL; //https://wiki.libsdl.org/SDL2/SDL_Window
+static SDL_Renderer *renderer = NULL; // https://wiki.libsdl.org/SDL2/SDL_Renderer -> https://github.com/libsdl-org/SDL/blob/SDL2/include/SDL_render.h
 static SDL_AudioDeviceID audioDevice;
 static SDL_bool isAudioOpened = SDL_FALSE;
 
 //Initialize SDL, grapics window and audio system
 
-int initializeSDL(chip8_t *chip8) {
+int initializeSDL(chip8_t *chip8) { // https://wiki.libsdl.org/SDL2/SDL_Init 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         fprintf(stderr, "Failed to initialize SDL: %s\n", SDL_GetError());
         return 1;
@@ -55,10 +59,10 @@ int initializeSDL(chip8_t *chip8) {
     return 0;
 }
 
-// SDL Input (keypad) handling
+// SDL Input (keypad) handling // https://wiki.libsdl.org/SDL2/SDL_KeyboardEvent 
 void handleSDLInput(chip8_t *chip8) {
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
+    while (SDL_PollEvent(&event)) { // https://wiki.libsdl.org/SDL2/SDL_PollEvent
         if (event.type == SDL_QUIT ) {
             exit(0);
         }
@@ -89,7 +93,7 @@ void handleSDLInput(chip8_t *chip8) {
     }
 }
 
-void renderGraphics(chip8_t *chip8) {
+void renderGraphics(chip8_t *chip8) { // SDL render docs near the top
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Set black background
     SDL_RenderClear(renderer); // Clear the screen
 

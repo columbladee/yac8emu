@@ -88,13 +88,17 @@ void renderGraphics(chip8_t *chip8) {
 		// If pixel is set (1) it is white = 0xFFFFFFFF
 		// If pixel is not set (0) it is black 0xFF000000
 		pixels[i] = chip8->display[i] ? 0xFFFFFFFF : 0xFF000000;
-		
-		//	Texture Update - New Pixel Data
-		//SDL_Update Texture
-		//	Rendering Process
-		//SDL_RenderClear
-		//SDL_RenderCopy
-		//SDL_RenderPresent
-
 	}
+		
+	//	Texture Update - New Pixel Data
+	SDL_UpdateTexture(texture, NULL, pixels, CHIP8_DISPLAY_WIDTH * sizeof(uint32_t));
+	//	Rendering Process
+
+
+	SDL_RenderClear(renderer); // Clear current rendering target with 0xFF000000
+	SDL_RenderCopy(renderer, texture, NULL, NULL); // Copy texture to render target (render target is the window in this instance)
+	SDL_RenderPresent(renderer); // Update screen with rendering performed since last call of renderGraphics
+	logDebug("Graphics rendered");
+
+	
 }
