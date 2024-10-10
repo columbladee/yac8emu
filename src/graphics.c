@@ -6,7 +6,7 @@
 
 #define WINDOW_SCALE 10
 #define WINDOW_WIDTH (CHIP8_DISPLAY_WIDTH * WINDOW_SCALE)
-#define WINDOW_HEIGHT (CHIP8_DISPLAY_HEIGHT * WINDOW SCALE)
+#define WINDOW_HEIGHT (CHIP8_DISPLAY_HEIGHT * WINDOW_SCALE)
 
 //SDL Vars
 
@@ -15,7 +15,7 @@ static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
 
-int initializeGraphics(chip8_t *chip8) {
+int initializeGraphics() {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		logError("Can't start SDL video, error: %s", SDL_GetError(());
 		return -1;

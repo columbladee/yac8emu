@@ -3,7 +3,7 @@
 
 #include "chip8.h"
 
-int initializeGraphics(chip8_t *chip8);
+int initializeGraphics();
 void destroyGraphics();
 void renderGraphics(chip8_t *chip8);
 
