@@ -1,6 +1,8 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-void updateTimers(chip8_t *chip8);
+#include "chip8.h"
+
+void updateTimers(chip8_t *chip8); // Handle Timers
 
 #endif //TIMER_H

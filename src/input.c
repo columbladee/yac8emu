@@ -4,6 +4,49 @@
 
 //Map SDL key events to CHIP-8 key inputs
 
+
+			//Map SDL Keys to corresponding Chip-8 keypad keys
+			//Left: Keyboard Right: CHIP-8 Keypad
+			// 1 2 3 4 -> 1 2 3 C
+			// Q W E R -> 4 5 6 D
+			// A S D F -> 7 8 9 E
+			// Z X C V -> A 0 B F
+void handleSDLInput(chip8_t *chip8) {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) { // https://wiki.libsdl.org/SDL2/SDL_PollEvent
+        if (event.type == SDL_QUIT ) {
+            exit(0);
+        }
+
+        if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
+            // Map keyboard keys to CHIP-8 keypad
+            uint8_t value = (event.type == SDL_KEYDOWN) ? 1 : 0;
+            switch (event.key.keysym.sym) {
+                case SDLK_1: chip8->keypad[0x1] = value; break; // 1
+                case SDLK_2: chip8->keypad[0x2] = value; break; // 2
+                case SDLK_3: chip8->keypad[0x3] = value; break; // 3
+                case SDLK_4: chip8->keypad[0xC] = value; break; // 4
+                case SDLK_q: chip8->keypad[0x4] = value; break; // Q
+                case SDLK_w: chip8->keypad[0x5] = value; break; // W
+                case SDLK_e: chip8->keypad[0x6] = value; break; // E
+                case SDLK_r: chip8->keypad[0xD] = value; break; // R
+                case SDLK_a: chip8->keypad[0x7] = value; break; // A
+                case SDLK_s: chip8->keypad[0x8] = value; break; // S
+                case SDLK_d: chip8->keypad[0x9] = value; break; // D
+                case SDLK_f: chip8->keypad[0xE] = value; break; // F
+                case SDLK_z: chip8->keypad[0xA] = value; break; // Z
+                case SDLK_x: chip8->keypad[0x0] = value; break; // X
+                case SDLK_c: chip8->keypad[0xB] = value; break; // C
+                case SDLK_v: chip8->keypad[0xF] = value; break; // V
+                default: break;
+            }
+        }
+    }
+}
+
+
+
+
 void handleSDLInput(chip8_t *chip8)  {
 	SDL_Event event;
 
@@ -54,7 +97,7 @@ void handleSDLInput(chip8_t *chip8)  {
 //Check if key is pressed in the chip-8 keypad
 bool isKeyPressed(chip8_t *chip8, uint8_t key) {
 	//Return true if keypad pressed, otherwise false
-	return chip8->keypad[key]
+	return chip8->keypad[key];
 }
 
 uint8_t waitForKeyPress(chip8_t *chip8) {

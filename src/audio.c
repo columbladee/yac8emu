@@ -5,42 +5,16 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <math.h>
+#include <string.h> 
+#include <stdint.h> // for int16_t
+#include <limits.h> // for INT16_MAX for AUDIO_S16SYS
 
-// NYI : Make this a square wave , not a sine wave, for accuracy
-/*
-Pseudocode for square wave
-
-function generateSquareWave(amplitude, frequency, duration):
-    // Initialize variables
-    period = 1 / frequency
-    currentTime = 0 
-    outputValue = 0 
-
-    while currentTime < duration:
-        // Check if current time is within the high period
-        if currentTime < (period / 2):
-            outputValue = amplitude
-        else:
-            outputValue = -amplitude 
-        
-        // Update time
-        currentTime += timeStep 
-        
-        // Output the value
-        print(outputValue) 
-
-    return 
-
-
-	Condition check: Inside the loop, an if statement checks if the current time is within the first half of the period (currentTime < (period / 2)).
-
-    If true, the outputValue is set to the positive amplitude.
-    If false, the outputValue is set to the negative amplitude.
-
-*/
 
 #define SAMPLE_RATE 44100
+// Frequency is tone in Hz
 #define FREQUENCY 800.0f
+// Amplitude of wave (0.0f to 1.0f)
+#define AMPLITUDE 0.5f
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -48,63 +22,65 @@ function generateSquareWave(amplitude, frequency, duration):
 
 static SDL_AudioDeviceID audioDevice = 0;
 static bool isPlaying = false;
-static float phase = 0.0f; // Phase of sine wave
+static float phase = 0.0f; // Phase accumulator
 			   
-//Audio callback
-
-// If you don't already know basic wave math: http://basicsynth.com/index.php?page=basic
-
 void audioCallback(void *userdata, uint8_t *stream, int len) {
-	float *buffer = (float *)stream;
-	int samples = len / sizeof(float);
+	// Casting stream to float - we're using AUDIO_F32SYS
+	int16_t *buffer = (int16_t *)stream;
+	int samples = len / sizeof(int16_t);
 
-	float amplitude = 0.5f; // Adjust volume (0.0f to 1.0f)
-	float phaseIncrement (2.0f * (float)M_PI * FREQUENCY) / SAMPLE_RATE;
-
+	double phaseIncrement = (2.0 * M_PI * FREQUENCY) / SAMPLE_RATE;
 	for (int i = 0; i < samples; i++) {
-		buffer[i] = amplitude * sinf(phase);
-		phase += phaseIncrement; 
-		if (phase >= 2.0f * (float)M_PI) {
-			phase -= 2.0f * (float)M_PI;
+		//Generate a square wave using the sign of sine function
+		float sampleValue = (sin(phase) > 0.0) ? AMPLITUDE : -AMPLITUDE;
+		buffer[i] = sampleValue;
+
+		//Increment phase
+
+		phase += phaseIncrement;
+
+		//Wrap phase to [0, 2PI) to avoid overflow
+		if (phase >= 2.0 * M_PI) {
+			phase -= 2.0 * M_PI;
 		}
-	}	
+	}
 }
 
 void initializeAudio() {
-	if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0 ) {
-		logError("Unable to initialize SDL Audio: %s", SDL_GetError()); 
+	if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
+		logError("Failed to initialize SDL audio: %s", SDL_GetError());
 		return;
-	}
+	} 
 
-	SDL_Audiospec desiredSpec;
-	SDL_zero(desiredSpec);
+	// Declare desiredSpec before use - was a problem before
+	SDL_AudioSpec desiredSpec;
+	memset(&desiredSpec, 0, sizeof(desiredSpec)); // Initialize desiredSpec to 0
+
 	desiredSpec.freq = SAMPLE_RATE;
-	desiredSpec.format = AUDIO_F32SYS;
-	desiredSpec.channels = 1; // mono
-	desiredSpec.samples = 1024; // buffer size
+	desiredSpec.format = AUDIO_S16SYS; // 32-bit float samples
+	desiredSpec.channels = 1; // Mono sound
+	desiredSpec.samples = 4096; // Good default buffer size
 	desiredSpec.callback = audioCallback;
 
-	SDL_Audiospec obtainedSpec;
-	audioDevice = SDL_OpenAudioDevice(NULL, 0, &desiredSpec, &obtainedSpec, 0);
+	// Open audio device
+
+	audioDevice = SDL_OpenAudioDevice(NULL, 0, &desiredSpec, NULL, 0);
 	if (audioDevice == 0) {
-		logError("Failed to open audio device with error %s", SDL_GetError());
+		logError("Failed to open audio device: %s", SDL_GetError());
 		return;
 	}
 
-	logInfo("Audio initialized with device ID %d", audioDevice)
+	logInfo("Audio device OPENED!");
 }
-
 
 void playSound() {
 	if (audioDevice == 0) {
 		logWarning("Audio device not initialized!");
 		return;
 	}
-
 	if (!isPlaying) {
-		SDL_PauseAudioDevice(audioDevice, 0); // start playback
+		SDL_PauseAudioDevice(audioDevice, 0);
 		isPlaying = true;
-		logDebug("Sound playback started");
 	}
 }
 
@@ -113,26 +89,9 @@ void stopSound() {
 		logWarning("Audio device not initialized!");
 		return;
 	}
-	
 	if (isPlaying) {
-		SDL_PauseAudioDevice(audioDevice, 1); // Pause Playback
+		SDL_PauseAudioDevice(audioDevice, 1);
 		isPlaying = false;
-		logDebug("Sound playback stopped");
+		logDebug("Sound stopped!");
 	}
-}
-
-
-void cleanupAudio() {
-	if (audioDevice != 0) {
-		SDL_CloseAudioDevice(audioDevice);
-		audioDevice = 0;
-		logInfo("Audio device IS NO MORE");
-	}
-
-	SDL_QuitSubSystem(SDL_INIT_AUDIO);
-	logInfo("Audio subsystem is clean and tidy");
-}
-
-bool isSoundPlaying() {
-	return isPlaying;
 }

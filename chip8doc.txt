@@ -25,6 +25,26 @@ chip8-emulator/
 
 
 
+==========================================
+
+SDL2 Notes
+
+Hardware Constants:
+
+http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#0.1
+
+// https://wiki.libsdl.org/SDL2/APIByCategory
+// https://wiki.libsdl.org/SDL2/CategoryAPIFunction
+// https://wiki.libsdl.org/SDL2/CategoryAPIStruct
+
+//https://wiki.libsdl.org/SDL2/SDL_Window   SDL_Window
+https://wiki.libsdl.org/SDL2/SDL_Renderer -> https://github.com/libsdl-org/SDL/blob/SDL2/include/SDL_render.h
+
+
+Audio:
+
+http://basicsynth.com/index.php?page=basic
+
 
 ===========================================
 

@@ -13,11 +13,13 @@ typedef enum {
     LOG_DEBUG
 } LogLevel;
 
-void initLogger(const char *logPath);
-void logInfo(const char *message, ...);
-void logWarning(const char *message, ...);
-void logError(const char *message, ...);
-void logDebug(const char *message, ...);
+void initLogger(const char *logFilePath);
 void closeLogger();
+
+void logInfo(const char *format, ...);
+void logWarning(const char *format, ...);
+void logError(const char *format, ...);
+void logDebug(const char *format, ...);
+
 
 #endif
