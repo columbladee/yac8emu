@@ -25,7 +25,6 @@ static bool isPlaying = false;
 static float phase = 0.0f; // Phase accumulator
 			   
 void audioCallback(void *userdata, uint8_t *stream, int len) {
-	// Casting stream to float - we're using AUDIO_F32SYS
 	int16_t *buffer = (int16_t *)stream;
 	int samples = len / sizeof(int16_t);
 
@@ -34,9 +33,6 @@ void audioCallback(void *userdata, uint8_t *stream, int len) {
 		//Generate a square wave using the sign of sine function
 		float sampleValue = (sin(phase) > 0.0) ? AMPLITUDE : -AMPLITUDE;
 		buffer[i] = sampleValue;
-
-		//Increment phase
-
 		phase += phaseIncrement;
 
 		//Wrap phase to [0, 2PI) to avoid overflow
@@ -94,4 +90,18 @@ void stopSound() {
 		isPlaying = false;
 		logDebug("Sound stopped!");
 	}
+}
+
+void cleanupAudio() {
+	if (audioDevice != 0) {
+		SDL_CloseAudioDevice(audioDevice);
+		audioDevice = 0;
+		logInfo("Audio device CLOSED!");
+	}
+	SDL_QuitSubSystem(SDL_INIT_AUDIO);
+	logInfo("Audio cleaned up!");
+}
+
+bool isSoundPlaying() {
+	return isPlaying;
 }

@@ -29,12 +29,11 @@ typedef struct {
     uint16_t I; // Index register
     uint16_t PC; // Program counter
 
-    // Memory
-    uint8_t memory[CHIP8_MEMORY_SIZE];
+    uint8_t memory[CHIP8_MEMORY_SIZE]; // Memory
 
-    // Stack, Stack Pointer
-    uint16_t stack[CHIP8_STACK_SIZE];
-    uint8_t SP;
+    
+    uint16_t stack[CHIP8_STACK_SIZE]; // Stack
+    uint8_t SP; // Stack pointer
     
     // Timers
     uint8_t delay_timer;        // Delay timer (decrements at 60Hz)
