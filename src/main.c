@@ -41,6 +41,40 @@ int main(int argc, char **argv) {
 	
 
 	// Main emulation loop
+	
+	bool running = true;
+	uint32_t lastCycleTime = SDL_GetTicks();
+	while (running) {
+		handleInput(&chip8, &running);
 
+		//One cycle
+		executeCycle(&chip8)
 
+		//Render if needed
+		
+		if (chip8.drawFlag) {
+			renderGraphics(&chip8)
+			chip8.drawFlag = false;
+		}
+
+		// Delay to control emulation speed
+		// This can be made more accurate/done better
+
+		uint32_t currentTime = SDL_GetTicks();
+		uint32_t elapsedTime = currentTime - lastCycleTime;
+		if (elapsedTime < 2 ) {
+			SDL_Delay(2 - elapsedTime);
+		}
+		lastCycleTime = currentTime;
+	}
+
+	// Cleanup
+	
+	destroyGraphics();
+	cleanupAudio();
+	destroySDL();
+	closeLogger();
+
+	logInfo("CHIP-8 Emulator was nicely terminated");
+	return EXIT_SUCCESS;
 }
