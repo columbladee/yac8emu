@@ -49,7 +49,9 @@ void initializeAudio() {
 	} 
 
 	// Declare desiredSpec before use - was a problem before
+	// https://wiki.libsdl.org/SDL2/SDL_OpenAudio
 	SDL_AudioSpec desiredSpec;
+	//void *memset(void *str, int c, size_t n)
 	memset(&desiredSpec, 0, sizeof(desiredSpec)); // Initialize desiredSpec to 0
 
 	desiredSpec.freq = SAMPLE_RATE;
@@ -94,6 +96,7 @@ void stopSound() {
 
 void cleanupAudio() {
 	if (audioDevice != 0) {
+		// https://wiki.libsdl.org/SDL2/SDL_CloseAudio
 		SDL_CloseAudioDevice(audioDevice);
 		audioDevice = 0;
 		logInfo("Audio device CLOSED!");

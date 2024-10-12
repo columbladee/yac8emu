@@ -1,9 +1,12 @@
 #include "chip8.h"
-#include "sdl_wrapper.h"
+#include "audio.h"
+#include "logger.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <SDL2/SDL.h>
+//SDL2/SDL.h for SDL_Event in waitForKeyPress function
 
 // CHIP-8 fontset (contains hexadecimal digits 0-F, stored at memory locations 0x050 to 0x09F)
 #define CHIP8_FONTSET_START_ADDRESS 0x50 
@@ -371,6 +374,7 @@ void clearDisplay(chip8_t *chip8) {
     memset(chip8->display, 0, sizeof(chip8->display)); // Clear display
 }
 
+
 bool drawSprite(chip8_t *chip8, uint8_t x, uint8_t y, const uint8_t *sprite, uint8_t height) {
     bool pixelFlipped = false; // Set to true if a pixel is turned off
 
@@ -390,4 +394,53 @@ bool drawSprite(chip8_t *chip8, uint8_t x, uint8_t y, const uint8_t *sprite, uin
     }
 
     return pixelFlipped;
+}
+
+
+//Map SDL Keys to corresponding Chip-8 keypad keys
+			//Left: Keyboard Right: CHIP-8 Keypad
+			// 1 2 3 4 -> 1 2 3 C
+			// Q W E R -> 4 5 6 D
+			// A S D F -> 7 8 9 E
+			// Z X C V -> A 0 B F
+
+
+uint8_t waitForKeyPress(chip8_t *chip8) {
+	SDL_Event event;
+	while (true) {
+		while (SDL_PollEvent(&event)) {
+			if (event.type = SDL_KEYDOWN) {
+				uint8_t key = 0xFF;
+				switch (event.key.keysym.sym) {
+					case SDLK_ESCAPE: exit(0);
+					case SDLK_1: key = 0x1; break;
+					case SDLK_2: key = 0x2; break;
+					case SDLK_3: key = 0x3; break;
+					case SDLK_4: key = 0xc; break;
+					case SDLK_q: key = 0x4; break;
+					case SDLK_w: key = 0x5; break;
+					case SDLK_e: key = 0x6; break;
+					case SDLK_r: key = 0xD; break;
+					case SDLK_a: key = 0x7; break;
+					case SDLK_s: key = 0x8; break;
+					case SDLK_d: key = 0x9; break;
+					case SDLK_f: key = 0xE; break;
+					case SDLK_z: key = 0xA; break;
+					case SDLK_x: key = 0x0; break;
+					case SDLK_c: key = 0xB; break;
+					case SDLK_v: key = 0xF; break;
+					default:
+						break;
+					}
+					if (key != 0xFF) {
+						chip8->keypad[key] = true;
+						logDebug("Key %X pressed during wait", key);
+						return key;
+					}
+				}  else if (event.type == SDL_QUIT) {
+					exit(0);
+				}
+			}
+			SDL_DELAY(1); // CPU usage considerations
+		}	
 }
