@@ -17,7 +17,7 @@ void handleInput(chip8_t *chip8, bool *running) {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
-			case SQL_QUIT:
+			case SDL_QUIT:
 				logInfo("SDL_QUIT event detected");
 				*running = false;
 				break;

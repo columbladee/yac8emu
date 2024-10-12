@@ -18,8 +18,8 @@ void closeLogger();
 
 void logInfo(const char *format, ...);
 void logWarning(const char *format, ...);
-void logError(const char *format, ...);
+void logError(const char *format, ...); 
 void logDebug(const char *format, ...);
 
 
-#endif
+#endif // LOGGER_H

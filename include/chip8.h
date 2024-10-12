@@ -21,6 +21,8 @@
 #define CHIP8_DISPLAY_HEIGHT 32 
 #define CHIP8_DISPLAY_SIZE (CHIP8_DISPLAY_WIDTH * CHIP8_DISPLAY_HEIGHT) // Total number of pixels in the display
 #define CHIP8_START_ADDRESS 0x200 
+#define CHIP8_FONTSET_START_ADDRESS 0x50
+#define CHIP8_FONTSET_SIZE 80
 
 
 typedef struct {

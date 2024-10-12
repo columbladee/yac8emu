@@ -17,7 +17,7 @@ static SDL_Texture *texture = NULL;
 
 int initializeGraphics() {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		logError("Can't start SDL video, error: %s", SDL_GetError(());
+		logError("Can't start SDL video, error: %s", SDL_GetError());
 		return -1;
 	}
 	logInfo("SDL Video initialized");
@@ -29,14 +29,14 @@ int initializeGraphics() {
 				  WINDOW_HEIGHT,
 				  SDL_WINDOW_SHOWN);
 	if (!window) {
-		logError("Failed to create window with error %s", SDL_GetError(());
+		logError("Failed to create window with error %s", SDL_GetError());
 		return -1;
 	}
 	logInfo("Window created");
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (!renderer) {
-		logError("Failed to create renderer with error: %s", SDL_GetError(());
+		logError("Failed to create renderer with error: %s", SDL_GetError());
 		return -1;
 	}
 	logInfo("Renderer Created");
@@ -47,7 +47,7 @@ int initializeGraphics() {
 				    CHIP8_DISPLAY_WIDTH,
 				    CHIP8_DISPLAY_HEIGHT);
 	if (!texture) {
-		logError("Failed to create texture with error: %s", SDL_GetError(());
+		logError("Failed to create texture with error: %s", SDL_GetError());
 		return -1;
 	}
 	logInfo("Texture created");

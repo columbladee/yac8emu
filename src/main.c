@@ -1,4 +1,4 @@
-include "chip8.h"
+#include "chip8.h"
 #include "graphics.h"
 #include "input.h"
 #include "audio.h"
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 	initializeAudio();
 
 	chip8_t chip8;
-	initializeCPU(&chip8)
+	initializeCPU(&chip8);
 	loadROM(&chip8, argv[1]);
 	
 
@@ -48,12 +48,12 @@ int main(int argc, char **argv) {
 		handleInput(&chip8, &running);
 
 		//One cycle
-		executeCycle(&chip8)
+		executeCycle(&chip8);
 
 		//Render if needed
 		
 		if (chip8.drawFlag) {
-			renderGraphics(&chip8)
+			renderGraphics(&chip8);
 			chip8.drawFlag = false;
 		}
 

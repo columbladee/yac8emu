@@ -8,10 +8,10 @@
 
 
 
-int initializeSDL(chip8_t *chip8) { 
+int initializeSDL() { 
     if (SDL_Init(0) != 0) {
         logError("Unable to initialize SDL: %s", SDL_GetError());
-        return 1;
+        return -1;
     }
     logInfo("SDL initialized successfully");
     return 0;

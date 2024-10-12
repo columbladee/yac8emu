@@ -18,6 +18,16 @@
 #define CHIP8_DISPLAY_HEIGHT 32
 #define CHIP8_START_ADDRESS 0x200
 
+
+/*
+ Refer to cowgod's chip 8 reference under 2-4 : Display for the fontset
+ It explains how
+ 0xF0 0x90 0x90 0x90 0xF0 represents the digit 0 and so on
+ through F 
+
+ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
+
+*/
 static const uint8_t chip8_fontset[CHIP8_FONTSET_SIZE] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -95,6 +105,14 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
     // Nibbles:  See documentation
 
     // Main switch handles high nibble of opcode
+
+    //Extract common values
+
+    uint8_t x = (opcode & 0x0F00) >> 8; // Register X
+    uint8_t y = (opcode & 0x00F0) >> 4; // Register Y
+    uint8_t kk = opcode & 0x00FF; // Lower byte
+    uint16_t nnn = opcode & 0x0FFF; // Address
+    uint8_t n = opcode & 0x000F; // Lower nibble
 
     switch (opcode & 0xF000) {
 

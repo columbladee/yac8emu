@@ -20,7 +20,7 @@ void closeLogger() {
 }
 
 void logMessage(LogLevel level, const char *format, va_list args) {
-    if (!logfile) return;
+    if (!logFile) return;
 
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
@@ -28,12 +28,12 @@ void logMessage(LogLevel level, const char *format, va_list args) {
     char timeStr[20];
     strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S", t);
 
-    const char *lecelStr;
+    const char *levelStr;
     switch (level) {
-        case LOG_LEVEL_ERROR: levelStr = "ERROR"; break;
-        case LOG_LEVEL_WARNING: levelStr = "WARNING"; break;
-        case LOG_LEVEL_INFO: levelStr = "INFO"; break;
-        case LOG_LEVEL_DEBUG: levelStr = "DEBUG"; break;
+        case LOG_ERROR: levelStr = "ERROR"; break;
+        case LOG_WARNING: levelStr = "WARNING"; break;
+        case LOG_INFO: levelStr = "INFO"; break;
+        case LOG_DEBUG: levelStr = "DEBUG"; break;
         default: levelStr = "UNKNOWN"; break;
     }
 
@@ -46,27 +46,27 @@ void logMessage(LogLevel level, const char *format, va_list args) {
 void logError(const char *format, ...) {
     va_list args;
     va_start(args, format);
-    logMessage(LOG_LEVEL_ERROR, format, args);
+    logMessage(LOG_ERROR, format, args);
     va_end(args);
 }
 
 void logWarning(const char *format, ...) {
     va_list args;
     va_start(args, format);
-    logMessage(LOG_LEVEL_WARNING, format, args);
+    logMessage(LOG_WARNING, format, args);
     va_end(args);
 }
 
 void logInfo(const char *format, ...) {
     va_list args;
     va_start(args, format);
-    logMessage(LOG_LEVEL_INFO, format, args);
+    logMessage(LOG_INFO, format, args);
     va_end(args);
 }
 
 void logDebug(const char *format, ...) {
     va_list args;
     va_start(args, format);
-    logMessage(LOG_LEVEL_DEBUG, format, args);
+    logMessage(LOG_DEBUG, format, args);
     va_end(args);
 }
