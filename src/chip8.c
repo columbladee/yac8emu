@@ -90,7 +90,7 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
     // Main switch handles high nibble of opcode
 
     //Extract common values
-
+    // These will cause warnings until implemented, but are here to make this function much cleaner
     uint8_t x = (opcode & 0x0F00) >> 8; // Register X
     uint8_t y = (opcode & 0x00F0) >> 4; // Register Y
     uint8_t kk = opcode & 0x00FF; // Lower byte
