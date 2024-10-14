@@ -1,5 +1,6 @@
 #include "chip8.h"
 #include "audio.h"
+#include "memory.h"
 #include "logger.h"
 #include "timer.h"
 #include <stdio.h>
@@ -72,25 +73,6 @@ void initializeCPU(chip8_t *chip8) {
     srand((unsigned int)time(NULL));
 }
 
-void loadROM(chip8_t *chip8, const char *romPath) {
-    FILE *rom = fopen(romPath, "rb");
-    if (!rom) {
-        fprintf(stderr, "Failed to open ROM: %s\n", romPath);
-        exit(1);
-    }
-
-    fseek(rom, 0, SEEK_END);
-    long romSize = ftell(rom);
-    rewind(rom);
-
-    if (romSize > (CHIP8_MEMORY_SIZE - CHIP8_START_ADDRESS)) {
-        fprintf(stderr, "ROM too large to fit in memory: %ld bytes\n", romSize);
-        exit(1);
-    }
-
-    fread(&chip8->memory[CHIP8_START_ADDRESS], sizeof(uint8_t), romSize, rom);
-    fclose(rom);
-}
 
 uint16_t fetchOpcode(chip8_t *chip8) {
     return (chip8->memory[chip8->PC] << 8) | chip8->memory[chip8->PC + 1];
@@ -376,18 +358,7 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
 }
 
 
-void updateTimers(chip8_t *chip8) { // Ensures delay timer accurately is updated each cycle (60Hz)
-    if (chip8->delay_timer > 0) {
-        chip8->delay_timer--;
-    }
 
-    if (chip8->sound_timer > 0) {
-        if (--chip8->sound_timer == 0) {
-            // Play sound when timer hits zero (handled by SDL)
-            playSound(); 
-        }
-    }
-}
 
 void clearDisplay(chip8_t *chip8) {
     memset(chip8->display, 0, sizeof(chip8->display)); // Clear display

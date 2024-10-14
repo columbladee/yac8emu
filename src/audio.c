@@ -25,6 +25,7 @@ static bool isPlaying = false;
 static float phase = 0.0f; // Phase accumulator
 			   
 void audioCallback(void *userdata, uint8_t *stream, int len) {
+	(void)userdata;
 	int16_t *buffer = (int16_t *)stream;
 	int samples = len / sizeof(int16_t);
 

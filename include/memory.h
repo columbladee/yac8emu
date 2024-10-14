@@ -3,8 +3,8 @@
 
 #include "chip8.h"
 
-void initializeMemory(chip8_t *chip8);
-void loadROM(chip8_t *chip8, const char *romPath);
+int initializeMemory(chip8_t *chip8);
+int loadROM(chip8_t *chip8, const char *romPath);
 
 
 #endif //MEMORY_H

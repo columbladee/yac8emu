@@ -9,6 +9,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+void cleanup() {	
+	destroyGraphics();
+	cleanupAudio();
+	destroySDL();
+	closeLogger();
+}
+
 int main(int argc, char **argv) {
 	if (argc != 2) {
 		printf("Usage: %s <ROM_FILE>\n", argv[0]);
@@ -33,13 +40,25 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	initializeAudio();
+	if (initializeAudio() != 0) {
+		logError("Failed to initialize audio");
+		destroyGraphics();
+		destroySDL();
+		closeLogger();
+		return EXIT_FAILURE;
+	}
 
+	//Create CHIP8 instance
 	chip8_t chip8;
 	initializeCPU(&chip8);
-	loadROM(&chip8, argv[1]);
-	
 
+	// Load ROM
+	if (loadROM(&chip8, argv[1]) != 0);
+		logError("Failed to load ROM");
+		cleanup();
+		return EXIT_FAILURE;
+	}
+		
 	// Main emulation loop
 	
 	bool running = true;
@@ -67,13 +86,9 @@ int main(int argc, char **argv) {
 		}
 		lastCycleTime = currentTime;
 	}
-
-	// Cleanup
 	
-	destroyGraphics();
-	cleanupAudio();
-	destroySDL();
-	closeLogger();
+	//Cleanup before exiting
+	cleanup();
 
 	logInfo("CHIP-8 Emulator was nicely terminated");
 	return EXIT_SUCCESS;

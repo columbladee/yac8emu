@@ -1,6 +1,6 @@
+#include "timer.h"
 #include "chip8.h"
 #include "audio.h"
-#include "sdl_wrapper.h" //for playSound()
 
 //Function to update the delay and sound timers
 void updateTimers(chip8_t *chip8) {

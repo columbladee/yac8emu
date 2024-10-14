@@ -25,16 +25,18 @@ static const uint8_t chip8_fontset[CHIP8_FONTSET_SIZE] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-void initializeMemory(chip8_t *chip8) {
+int initializeMemory(chip8_t *chip8) {
     memset(chip8->memory, 0, sizeof(chip8->memory)); // Clear memory
 
     //Load fontset into memory (starting at 0x50)
     for (int i = 0; i < CHIP8_FONTSET_SIZE; i++) {
         chip8->memory[CHIP8_FONTSET_START_ADDRESS + i] = chip8_fontset[i]; 
     }
+    logInfo("Memory initialized and fontset loaded");
+    return 0;
 }
 
-void loadROM(chip8_t *chip, const char *romPath) {
+int loadROM(chip8_t *chip, const char *romPath) {
     FILE *rom = fopen(romPath, "rb");
     if (!rom) {
         fprintf(stderr, "Failed to open ROM: %s\n", romPath);
@@ -49,12 +51,12 @@ void loadROM(chip8_t *chip, const char *romPath) {
     // Can the ROM fit in memory? (Max size after 0x200)
     if (romSize > (CHIP8_MEMORY_SIZE - CHIP8_START_ADDRESS)) {
         fprintf(stderr, "ROM too large to fit in memory: %ld bytes\n", romSize);
-        return 1;
+        return 1; // nope, error
     }
 
     //Load ROM into memory (starting at 0x200)
     fread(&chip->memory[CHIP8_START_ADDRESS], sizeof(uint8_t), romSize, rom);
     fclose(rom);
 
-    return 0;
+    return 0; //good to go
 }

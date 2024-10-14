@@ -1,6 +1,7 @@
 #include "sdl_wrapper.h"
 #include "logger.h"
 #include <stdio.h>
+#include <SDL2/SDL.h>
 
 // https://wiki.libsdl.org/SDL2/APIByCategory
 // https://wiki.libsdl.org/SDL2/CategoryAPIFunction
