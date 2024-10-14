@@ -75,7 +75,7 @@ void destroyGraphics() {
 		logInfo("Window DESTROYED");
 	}
 
-	SQL_QuitSubSystem(SDL_INIT_VIDEO);
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	logInfo("SDL Video subsystem QUIT it just QUIT");
 }
 

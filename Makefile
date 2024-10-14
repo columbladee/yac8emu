@@ -1,20 +1,27 @@
+# Makefile for CHIP-8 Emulator
+
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 `sdl2-config --cflags`
+CFLAGS = -Wall -Wextra -O2 `sdl2-config --cflags` -Iinclude
 LDFLAGS = `sdl2-config --libs` -lm
 TARGET = chip8_emulator
 
-SRCS = main.c chip8.c graphics.c input.c audio.c logger.c sdl_wrapper.c memory.c
-OBJS = $(SRCS:.c=.o)
+SRCDIR = src
+INCDIR = include
+BUILDDIR = build
+
+SRC = $(wildcard $(SRCDIR)/*.c)
+OBJ = $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SRC))
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
+$(TARGET): $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-%.o: %.c
+$(BUILDDIR)/%.o: $(SRCDIR)/%.c
+	mkdir -p $(BUILDDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(BUILDDIR) $(TARGET)
 
 .PHONY: all clean

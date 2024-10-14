@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 	
 	// Init logger, SDL, Graphics, Audio, CHIP-8 instance
 
-	initializeLogger("logs/chip8_emulator.log");
+	initLogger("logs/chip8_emulator.log");
 	logInfo("CHIP-8 Emulator started");
 
 	if (initializeSDL() != 0) {

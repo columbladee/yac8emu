@@ -1,6 +1,7 @@
 #include "chip8.h"
 #include "audio.h"
 #include "logger.h"
+#include "timer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -171,7 +172,7 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
                 break;
 
             case 0x6000: // 6XNN : Set VX to NN
-                chip8->V[(opcode & 0x0F00) >> 8] == chip8->V[(opcode & 0x00FF)]; // Set register VX to NN
+                chip8->V[(opcode & 0x0F00) >> 8] = chip8->V[(opcode & 0x00FF)]; // Set register VX to NN
                 chip8->PC += 2; // Move to next instruction
                 break;
             
@@ -266,7 +267,7 @@ void decodeAndExecute(chip8_t *chip8, uint16_t opcode) {
                 uint8_t x = chip8->V[(opcode & 0xF00) >> 8]; // X-coordinate from VX
                 uint8_t y = chip8->V[(opcode & 0x0F0) >> 4]; // Y-coordinate from VY
                 uint8_t height = opcode & 0x000F; // Height (N bytes) from the last nibble
-                const uint8_t *sprite = opcode &chip8->memory[chip8->I]; // Sprite draw starting at memory address I
+                const uint8_t *sprite = &chip8->memory[chip8->I]; // Sprite draw starting at memory address I
                 chip8->V[0xF] = drawSprite(chip8, x, y, sprite, height) ? 1 : 0; // Set VF to 1 if collision 
                 chip8->drawFlag = true; // Set draw flag to redraw screen
                 chip8->PC += 2; // Move to next instruction
@@ -427,7 +428,7 @@ uint8_t waitForKeyPress(chip8_t *chip8) {
 	SDL_Event event;
 	while (true) {
 		while (SDL_PollEvent(&event)) {
-			if (event.type = SDL_KEYDOWN) {
+			if (event.type == SDL_KEYDOWN) {
 				uint8_t key = 0xFF;
 				switch (event.key.keysym.sym) {
 					case SDLK_ESCAPE: exit(0);
@@ -459,6 +460,6 @@ uint8_t waitForKeyPress(chip8_t *chip8) {
 					exit(0);
 				}
 			}
-			SDL_DELAY(1); // CPU usage considerations
+			SDL_Delay(1); // CPU usage considerations
 		}	
 }

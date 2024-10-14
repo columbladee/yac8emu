@@ -34,7 +34,7 @@ void initializeMemory(chip8_t *chip8) {
     }
 }
 
-int loadROM(chip8_t *chip, const char *romPath) {
+void loadROM(chip8_t *chip, const char *romPath) {
     FILE *rom = fopen(romPath, "rb");
     if (!rom) {
         fprintf(stderr, "Failed to open ROM: %s\n", romPath);
