@@ -57,7 +57,6 @@ typedef struct {
 // Function Prototypes
 
 void initializeCPU(chip8_t *chip8);
-void loadROM(chip8_t *chip8, const char *romPath);
 void executeCycle(chip8_t *chip8); //(fetch, decode, execute)
 uint16_t fetchOpcode(chip8_t *chip8);
 void decodeAndExecute(chip8_t *chip8, uint16_t opcode);
