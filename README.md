@@ -115,8 +115,6 @@ The CHIP-8 emulator maps the original hexadecimal keypad to your keyboard as fol
 ## Logging
 
 - The emulator generates logs in the `logs/chip8_emulator.log` file.
-- Logs include information, warnings, errors, and debug messages.
-- Use logs to troubleshoot and understand emulator behavior.
 
 ## Resources
 
