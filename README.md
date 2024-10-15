@@ -119,14 +119,14 @@ The CHIP-8 emulator maps the original hexadecimal keypad to your keyboard as fol
 ## Resources
 
 - **CHIP-8 Instruction Set Reference**: [Cowgod's CHIP-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM)
-- **CHIP-8 Design Specification**: [Columbia University Embededded Systems 4840 CHIP-8 Design Specification] (https://www1.cs.columbia.edu/~sedwards/classes/2016/4840-spring/designs/Chip8.pdf)
-- **CHIP-8 Hardware Emulator**:[CSEE 4840 Embedded Systems: CHIP-8 Hardware Emulator] (https://www.cs.columbia.edu/~sedwards/classes/2022/4840-spring/designs/CHIP-8.pdf)
-- **CHIP-8 Wiki**:[mattmikolay's Github Wiki page] (https://github.com/mattmikolay/chip-8/wiki)
+- **CHIP-8 Design Specification**: [Columbia University Embededded Systems 4840 CHIP-8 Design Specification](https://www1.cs.columbia.edu/~sedwards/classes/2016/4840-spring/designs/Chip8.pdf)
+- **CHIP-8 Hardware Emulator**:[CSEE 4840 Embedded Systems: CHIP-8 Hardware Emulator](https://www.cs.columbia.edu/~sedwards/classes/2022/4840-spring/designs/CHIP-8.pdf)
+- **CHIP-8 Wiki**: [mattmikolay's Github Wiki page](https://github.com/mattmikolay/chip-8/wiki)
 - **ROMs**: Search online lol
 - **SDL2 Documentation**: [SDL2 Wiki](https://wiki.libsdl.org/SDL2)
-- **Misc. Audio information**: [BasicSynth] (http://basicsynth.com/index.php?page=basic) 
-- **Misc: Textbook/Notes I found**: [Under the Covers : The Secret Life of Software - Boston University’s College of Arts and Sciences Textbook] (https://jappavoo.github.io/UndertheCovers/textbook/intro_tb.html)
-- **Misc: Textbook/Notes I found**: [Under the Covers : The Secret Life of Software - Boston University’s College of Arts and Sciences Lecture Notes] (https://jappavoo.github.io/UndertheCovers/textbook/intro_tb.html)
+- **Misc. Audio information**: [BasicSynth](http://basicsynth.com/index.php?page=basic) 
+- **Misc: Textbook/Notes I found**: [Under the Covers : The Secret Life of Software - Boston University’s College of Arts and Sciences Textbook](https://jappavoo.github.io/UndertheCovers/textbook/intro_tb.html)
+- **Misc: Textbook/Notes I found**: [Under the Covers : The Secret Life of Software - Boston University’s College of Arts and Sciences Lecture Notes](https://jappavoo.github.io/UndertheCovers/textbook/intro_tb.html)
 
 
 
