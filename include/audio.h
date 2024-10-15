@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 int initializeAudio();
-void playsSound();
+void playSound();
 void stopSound();
 void cleanupAudio();
 bool isSoundPlaying();
