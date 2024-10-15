@@ -2,6 +2,7 @@
 #include "graphics.h"
 #include "input.h"
 #include "audio.h"
+#include "memory.h"
 #include "logger.h"
 #include "sdl_wrapper.h"
 #include <SDL2/SDL.h>
@@ -53,7 +54,7 @@ int main(int argc, char **argv) {
 	initializeCPU(&chip8);
 
 	// Load ROM
-	if (loadROM(&chip8, argv[1]) != 0);
+	if (loadROM(&chip8, argv[1]) != 0) {
 		logError("Failed to load ROM");
 		cleanup();
 		return EXIT_FAILURE;
