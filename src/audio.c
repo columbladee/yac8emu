@@ -43,7 +43,7 @@ void audioCallback(void *userdata, uint8_t *stream, int len) {
 	}
 }
 
-void initializeAudio() {
+int initializeAudio() {
 	if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
 		logError("Failed to initialize SDL audio: %s", SDL_GetError());
 		return;
@@ -69,6 +69,7 @@ void initializeAudio() {
 		return;
 	}
 
+	return 0;
 	logInfo("Audio device OPENED!");
 }
 

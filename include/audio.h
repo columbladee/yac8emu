@@ -6,7 +6,7 @@
 
 #include <stdbool.h>
 
-void initializeAudio();
+int initializeAudio();
 void playsSound();
 void stopSound();
 void cleanupAudio();
